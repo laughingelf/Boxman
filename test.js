@@ -1,2 +1,3 @@
-let randomNum = Math.floor(Math.random() * (5 - 1) + 1)
+let randInt = Math.floor(Math.random() * (6 - 1) + 1)
 
+console.log(randInt)

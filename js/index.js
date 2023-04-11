@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d')
 let gameOn = false
 let obstacleArr = []
 let score = 0
+let level = 1
 
 const boxmanImg = new Image()
 boxmanImg.src = './images/boxman.png'
@@ -30,8 +31,10 @@ rock2.src = './images/rock2.png'
 rock3.src = './images/rock3.png'
 rock4.src = './images/rock4.png'
 
-function gameOver() {
 
+function winGame() {
+    console.log('won game')
+    level = 1
     clearInterval(animationId)
     clearInterval(obstacleId)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -40,7 +43,47 @@ function gameOver() {
 
     ctx.font = '150px Special Elite'
     ctx.fillStyle = 'red'
-    ctx.fillText('GAME OVER', 200, 300)
+    ctx.fillText(`You Win`, 290, 330)
+
+    obstacleArr = []
+    boxman.x = 250
+    boxman.y = -120
+    boxman.yVelocity = 0
+    gameOn = false
+    console.log('game Over')
+}
+
+function LevelUp() {
+    gameOn = false
+    level++
+    clearInterval(animationId)
+    clearInterval(obstacleId)
+    ctx.fillStyle = 'red'
+    ctx.font = '150px Special Elite'
+    ctx.fillText(`Level ${level}`, 250, 300)
+    document.getElementById('play-button').onclick = function () {
+        if (!gameOn) {
+            startGame()
+        }
+
+    }
+    //     requestAnimationFrame(AnimationLoop, generateObastacles)
+}
+
+
+
+function gameOver() {
+    level = 1
+    clearInterval(animationId)
+    clearInterval(obstacleId)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    ctx.font = '150px Special Elite'
+    ctx.fillStyle = 'red'
+    ctx.fillText(`Game Over`, 200, 330)
+    // ctx.fillText(`Score: ${score}`, 255, 400)
 
     obstacleArr = []
     boxman.x = 250
@@ -59,6 +102,7 @@ function collisionDetection(object) {
 }
 
 function generateObastacles() {
+    if (!gameOn) { return }
     let randomRock = Math.floor(Math.random() * (5 - 1) + 1)
     let rock = `rock${randomRock}`
 
@@ -88,10 +132,18 @@ class Obstacle {
         this.y = canvas.height - 160;
         this.width = 50;
         this.height = 80;
+        this.randInt2 = Math.floor(Math.random() * (8 - 3) + 3)
+        this.randInt3 = Math.floor(Math.random() * (8 - 5) + 5)
     }
 
     update() {
-        this.x -= 6
+        if (level == 2) {
+            this.x -= this.randInt2
+        } else if (level == 3) {
+            this.x -= this.randInt3
+        } else {
+            this.x -= 5
+        }
     }
 
     draw() {
@@ -117,7 +169,12 @@ boxman = {
             this.yVelocity = 0
         }
         if (this.y < 60) {
-            this.yVelocity += 10
+            this.yVelocity += 5
+        }
+        if (level == 2) {
+            boxman.x = 450
+        } else if (level == 3) {
+            boxman.x = 650
         }
 
 
@@ -135,6 +192,8 @@ boxman = {
 
 
 function AnimationLoop() {
+    console.log('animating')
+    // if (!gameOn) { return }
     // ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.reset()
     ctx.drawImage(bg1, 0, 0, canvas.width, canvas.height)
@@ -156,6 +215,13 @@ function AnimationLoop() {
             score += 1
             // console.log(score)
             obstacleArr.splice(i, 1)
+            if (score == 5 && level == 1) {
+                LevelUp()
+            } else if (score == 5 && level == 2) {
+                LevelUp()
+            } else if (score == 5 && level == 3) {
+                winGame()
+            }
         }
     })
     // ctx.fillStyle = 'black'
@@ -163,16 +229,17 @@ function AnimationLoop() {
     ctx.fillStyle = 'red'
     ctx.font = '36px Special Elite'
     ctx.fillText(`Score: ${score}`, 30, 52)
-
-
 }
 
 
 function startGame() {
-    gameOn = true
+    console.log('starting game')
+    score = 0
 
+    gameOn = true
     animationId = setInterval(AnimationLoop, 16)
     obstacleId = setInterval(generateObastacles, 2500)
+
 
 
 
