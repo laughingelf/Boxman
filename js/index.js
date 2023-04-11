@@ -40,15 +40,14 @@ function gameOver() {
 
     ctx.font = '150px Special Elite'
     ctx.fillStyle = 'red'
-    ctx.fillText('You Lose', 300, 300)
+    ctx.fillText('GAME OVER', 200, 300)
 
     obstacleArr = []
     boxman.x = 250
     boxman.y = -120
     boxman.yVelocity = 0
-    boxman.gravity = .2
     gameOn = false
-    console.log('game over')
+    console.log('game Over')
 }
 
 function collisionDetection(object) {
@@ -123,12 +122,12 @@ boxman = {
 
 
         this.y += this.yVelocity //creating gravity
-        // console.log(this.yVelocity)
         ctx.drawImage(boxmanImg, this.x, this.y, this.width, this.height)
     },
 
     newPosition(event) {
         if (event.code === 'ArrowUp') {
+            this.yVelocity = 0
             this.yVelocity -= 25
         }
     }
@@ -136,7 +135,8 @@ boxman = {
 
 
 function AnimationLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    // ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.reset()
     ctx.drawImage(bg1, 0, 0, canvas.width, canvas.height)
     ctx.drawImage(bg2, 0, 0, canvas.width, canvas.height)
     ctx.drawImage(bg3, 0, 0, canvas.width, canvas.height)
@@ -154,10 +154,16 @@ function AnimationLoop() {
         collisionDetection(i)
         if (i.x + i.width < 0) {
             score += 1
-            console.log(score)
+            // console.log(score)
             obstacleArr.splice(i, 1)
         }
     })
+    // ctx.fillStyle = 'black'
+    // ctx.fillRect(20, 20, 120, 50)
+    ctx.fillStyle = 'red'
+    ctx.font = '36px Special Elite'
+    ctx.fillText(`Score: ${score}`, 30, 52)
+
 
 }
 
@@ -167,6 +173,7 @@ function startGame() {
 
     animationId = setInterval(AnimationLoop, 16)
     obstacleId = setInterval(generateObastacles, 2500)
+
 
 
     // ctx.drawImage(boxmanImg, 200, 400, 80, 120) this is working
@@ -179,7 +186,8 @@ function startGame() {
 window.onload = function () {
     document.getElementById('play-button').onclick = function () {
         if (!gameOn) {
-
+            score = 0
+            boxman.gravity = .1
             ctx.clearRect(0, 0, canvas.width, canvas.height)
 
 
@@ -195,7 +203,6 @@ window.onload = function () {
             gameBoard.width = '1200'
 
             document.addEventListener('keydown', (event) => {
-                // console.log(event.key)
                 boxman.newPosition(event)
             })
 
