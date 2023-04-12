@@ -27,9 +27,13 @@ backgroundLayers = [this.bg1, this.bg2, this.bg3, this.bg4, this.bg5]
 const pinkMonster = new Image()
 const robotBall = new Image()
 const furrMonster = new Image()
+const greenMonster = new Image()
+const alienMonster = new Image()
 pinkMonster.src = './images/pinkMonster.png'
 robotBall.src = './images/robotBall.png'
 furrMonster.src = './images/furrMonster.png'
+greenMonster.src = './images/greenMonster.png'
+alienMonster.src = './images/alienMonster.png'
 
 function drawBackground() {
     backgroundLayers.forEach((layer) => {
@@ -100,7 +104,7 @@ function collisionDetection(object) {
 
 function generateObastacles() {
     if (!gameOn) { return }
-    let randomEnemy = Math.floor(Math.random() * (4 - 1) + 1)
+    let randomEnemy = Math.floor(Math.random() * (6 - 1) + 1)
     let enemy = `enemy${randomEnemy}`
 
     let thisEnemy
@@ -114,6 +118,12 @@ function generateObastacles() {
             break;
         case 'enemy3':
             thisEnemy = furrMonster;
+            break;
+        case 'enemy4':
+            thisEnemy = greenMonster;
+            break;
+        case 'enemy5':
+            thisEnemy = alienMonster;
             break;
     }
     obstacleArr.push(new Obstacle(thisEnemy))
@@ -134,6 +144,10 @@ class Obstacle {
         this.robotWidth = 409;
         this.furrMonsterHeight = 534
         this.furrMonsterWidth = 654
+        this.greenMonsterHeight = 508
+        this.greenMonsterWidth = 451
+        this.alienMonsterHeight = 787
+        this.alienMonsterWidth = 1214
         this.frameX = 0
     }
 
@@ -164,6 +178,20 @@ class Obstacle {
             }
         } else if (this.enemy === furrMonster) {
             ctx.drawImage(furrMonster, this.frameX * this.furrMonsterWidth, 0, this.furrMonsterWidth, this.furrMonsterHeight, this.x, this.y, this.width, this.height)
+            if (this.frameX < 12) {
+                this.frameX++
+            } else {
+                this.frameX = 0
+            }
+        } else if (this.enemy === greenMonster) {
+            ctx.drawImage(greenMonster, this.frameX * this.greenMonsterWidth, 0, this.greenMonsterWidth, this.greenMonsterHeight, this.x, this.y, this.width, this.height)
+            if (this.frameX < 12) {
+                this.frameX++
+            } else {
+                this.frameX = 0
+            }
+        } else if (this.enemy === alienMonster) {
+            ctx.drawImage(alienMonster, this.frameX * this.alienMonsterWidth, 0, this.alienMonsterWidth, this.alienMonsterHeight, this.x, this.y, this.width, this.height)
             if (this.frameX < 12) {
                 this.frameX++
             } else {
@@ -232,12 +260,6 @@ boxman = {
             jumping = true
             this.yVelocity = 0
             this.yVelocity -= 25
-        }
-        if (event.code === 'ArrowRight') {
-            this.x += 25
-            this.x -= 19
-        } else {
-            this.speed = 0
         }
     }
 }
