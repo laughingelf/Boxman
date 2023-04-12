@@ -5,6 +5,8 @@ let obstacleArr = []
 let score = 0
 let level = 1
 let jumping = false
+let gameSpeed = 7
+let gameFrame = 0
 
 const boxmanImg = new Image()
 boxmanImg.src = './images/walkingSpritesheet.png'
@@ -22,7 +24,6 @@ bg2.src = './images/layer-2.png'
 bg3.src = './images/layer-3.png'
 bg4.src = './images/layer-4.png'
 bg5.src = './images/layer-5.png'
-backgroundLayers = [this.bg1, this.bg2, this.bg3, this.bg4, this.bg5]
 
 const pinkMonster = new Image()
 const robotBall = new Image()
@@ -37,13 +38,46 @@ alienMonster.src = './images/alienMonster.png'
 
 function drawBackground() {
     backgroundLayers.forEach((layer) => {
-        ctx.drawImage(layer, 0, 0, canvas.width, canvas.height)
-        ctx.drawImage(layer, 0, 0 + canvas.width, canvas.width, canvas.height)
+        layer.update()
+        layer.draw()
     })
 }
 
+class Layer {
+    constructor(image, speedMod) {
+        this.x = 0
+        this.y = 0
+        this.width = 1200
+        this.height = 500
+        this.image = image
+        this.speedMod = speedMod
+        this.speed = gameSpeed * this.speedMod
+    }
+    update() {
+        this.speed = gameSpeed * this.speedMod
+        if (this.x <= -this.width) {
+            this.x = 0
+        }
+        this.x = this.x - this.speed
+        //refactor of code above
+        this.x = gameFrame * this.speed % this.width
+    }
+    draw() {
+        ctx.drawImage(this.image, this.x, this.y, canvas.width, canvas.height)
+        ctx.drawImage(this.image, this.x + this.width, this.y, canvas.width, canvas.height)
+
+    }
+}
+const layer1 = new Layer(bg1, 0.2)
+const layer2 = new Layer(bg2, 0.4)
+const layer3 = new Layer(bg3, 0.5)
+const layer4 = new Layer(bg4, 0.6)
+const layer5 = new Layer(bg5, 1)
+backgroundLayers = [layer1, layer2, layer3, layer4, layer5]
+
+
 function winGame() {
-    console.log('won game')
+    // console.log('won game')
     level = 1
     clearInterval(animationId)
     clearInterval(obstacleId)
@@ -57,7 +91,7 @@ function winGame() {
     boxman.y = -120
     boxman.yVelocity = 0
     gameOn = false
-    console.log('game Over')
+    // console.log('game Over')
 }
 
 function LevelUp() {
@@ -91,7 +125,7 @@ function gameOver() {
     boxman.y = -120
     boxman.yVelocity = 0
     gameOn = false
-    console.log('game Over')
+    // console.log('game Over')
 }
 
 function collisionDetection(object) {
@@ -295,11 +329,12 @@ function AnimationLoop() {
     ctx.fillStyle = 'red'
     ctx.font = '36px Special Elite'
     ctx.fillText(`Score: ${score}`, 30, 52)
+    gameFrame--
 }
 
 
 function startGame() {
-    console.log('starting game')
+    // console.log('starting game')
     score = 0
 
     gameOn = true
