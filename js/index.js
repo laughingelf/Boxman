@@ -24,15 +24,12 @@ bg4.src = './images/layer-4.png'
 bg5.src = './images/layer-5.png'
 backgroundLayers = [this.bg1, this.bg2, this.bg3, this.bg4, this.bg5]
 
-const rock1 = new Image()
-const rock2 = new Image()
-const rock3 = new Image()
-const rock4 = new Image()
-rock1.src = './images/rock1.png'
-rock2.src = './images/rock2.png'
-rock3.src = './images/rock3.png'
-rock4.src = './images/rock4.png'
-
+const pinkMonster = new Image()
+const robotBall = new Image()
+const furrMonster = new Image()
+pinkMonster.src = './images/pinkMonster.png'
+robotBall.src = './images/robotBall.png'
+furrMonster.src = './images/furrMonster.png'
 
 function drawBackground() {
     backgroundLayers.forEach((layer) => {
@@ -103,37 +100,41 @@ function collisionDetection(object) {
 
 function generateObastacles() {
     if (!gameOn) { return }
-    let randomRock = Math.floor(Math.random() * (5 - 1) + 1)
-    let rock = `rock${randomRock}`
+    let randomEnemy = Math.floor(Math.random() * (4 - 1) + 1)
+    let enemy = `enemy${randomEnemy}`
 
-    let thisRock
+    let thisEnemy
 
-    switch (rock) {
-        case 'rock1':
-            thisRock = rock1;
+    switch (enemy) {
+        case 'enemy1':
+            thisEnemy = pinkMonster;
             break;
-        case 'rock2':
-            thisRock = rock2;
+        case 'enemy2':
+            thisEnemy = robotBall;
             break;
-        case 'rock3':
-            thisRock = rock3;
-            break
-        case 'rock4':
-            thisRock = rock4;
+        case 'enemy3':
+            thisEnemy = furrMonster;
             break;
     }
-    obstacleArr.push(new Obstacle(thisRock))
+    obstacleArr.push(new Obstacle(thisEnemy))
 }
 
 class Obstacle {
-    constructor(rock) {
-        this.rock = rock;
+    constructor(enemy) {
+        this.enemy = enemy;
         this.x = canvas.width;
-        this.y = canvas.height - 160;
+        this.y = canvas.height - 170;
         this.width = 50;
         this.height = 80;
         this.randInt2 = Math.floor(Math.random() * (8 - 3) + 3)
         this.randInt3 = Math.floor(Math.random() * (8 - 5) + 5)
+        this.pinkHeight = 610;
+        this.pinkWidth = 674
+        this.robotHeight = 522;
+        this.robotWidth = 409;
+        this.furrMonsterHeight = 534
+        this.furrMonsterWidth = 654
+        this.frameX = 0
     }
 
     update() {
@@ -147,7 +148,28 @@ class Obstacle {
     }
 
     draw() {
-        ctx.drawImage(this.rock, this.x, this.y, this.width, this.height)
+        if (this.enemy === pinkMonster) {
+            ctx.drawImage(pinkMonster, this.frameX * this.pinkWidth, 0, this.pinkWidth, this.pinkHeight, this.x, this.y, this.width, this.height)
+            if (this.frameX < 16) {
+                this.frameX++
+            } else {
+                this.frameX = 0
+            }
+        } else if (this.enemy === robotBall) {
+            ctx.drawImage(robotBall, this.frameX * this.robotWidth, 0, this.robotWidth, this.robotHeight, this.x, this.y, this.width, this.height)
+            if (this.frameX < 15) {
+                this.frameX++
+            } else {
+                this.frameX = 0
+            }
+        } else if (this.enemy === furrMonster) {
+            ctx.drawImage(furrMonster, this.frameX * this.furrMonsterWidth, 0, this.furrMonsterWidth, this.furrMonsterHeight, this.x, this.y, this.width, this.height)
+            if (this.frameX < 12) {
+                this.frameX++
+            } else {
+                this.frameX = 0
+            }
+        }
     }
 }
 
