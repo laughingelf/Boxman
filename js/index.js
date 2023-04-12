@@ -4,7 +4,6 @@ let gameOn = false
 let obstacleArr = []
 let score = 0
 let level = 1
-speed = 0
 let jumping = false
 
 const boxmanImg = new Image()
@@ -166,9 +165,12 @@ boxman = {
     jumpSpriteHeight: 169,
     jumpSpriteWidth: 92,
     frameX: 0,
+    speed: 0,
+    maxspeed: 0,
 
 
     update() {
+
         //stops the character from going below the line
         if (this.y > canvas.height - 215) {
             this.y = canvas.height - 215
@@ -208,6 +210,12 @@ boxman = {
             jumping = true
             this.yVelocity = 0
             this.yVelocity -= 25
+        }
+        if (event.code === 'ArrowRight') {
+            this.x += 25
+            this.x -= 19
+        } else {
+            this.speed = 0
         }
     }
 }
@@ -251,7 +259,7 @@ function startGame() {
     score = 0
 
     gameOn = true
-    animationId = setInterval(AnimationLoop, 15)
+    animationId = setInterval(AnimationLoop, 16)
     obstacleId = setInterval(generateObastacles, 2500)
 
 
