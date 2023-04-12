@@ -4,23 +4,25 @@ let gameOn = false
 let obstacleArr = []
 let score = 0
 let level = 1
+speed = 0
 
 const boxmanImg = new Image()
-boxmanImg.src = './images/boxman.png'
+boxmanImg.src = './images/walkingSpritesheet.png'
+const boxmanJumpImg = new Image()
+boxmanJumpImg.src = './images/jump.png'
 
-// rockImg = new Image()
-// rockImg.src = './images/rock.png'
 
-const bg1 = new Image()
-const bg2 = new Image()
-const bg3 = new Image()
-const bg4 = new Image()
-const bg5 = new Image()
+bg1 = new Image()
+bg2 = new Image()
+bg3 = new Image()
+bg4 = new Image()
+bg5 = new Image()
 bg1.src = './images/layer-1.png'
 bg2.src = './images/layer-2.png'
 bg3.src = './images/layer-3.png'
 bg4.src = './images/layer-4.png'
 bg5.src = './images/layer-5.png'
+backgroundLayers = [this.bg1, this.bg2, this.bg3, this.bg4, this.bg5]
 
 const rock1 = new Image()
 const rock2 = new Image()
@@ -32,14 +34,18 @@ rock3.src = './images/rock3.png'
 rock4.src = './images/rock4.png'
 
 
+function drawBackground() {
+    backgroundLayers.forEach((layer) => {
+        ctx.drawImage(layer, 0, 0, canvas.width, canvas.height)
+        ctx.drawImage(layer, 0, 0 + canvas.width, canvas.width, canvas.height)
+    })
+}
+
 function winGame() {
     console.log('won game')
     level = 1
     clearInterval(animationId)
     clearInterval(obstacleId)
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = 'black'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     ctx.font = '150px Special Elite'
     ctx.fillStyle = 'red'
@@ -70,20 +76,14 @@ function LevelUp() {
     //     requestAnimationFrame(AnimationLoop, generateObastacles)
 }
 
-
-
 function gameOver() {
     level = 1
     clearInterval(animationId)
     clearInterval(obstacleId)
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = 'black'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     ctx.font = '150px Special Elite'
     ctx.fillStyle = 'red'
     ctx.fillText(`Game Over`, 200, 330)
-    // ctx.fillText(`Score: ${score}`, 255, 400)
 
     obstacleArr = []
     boxman.x = 250
@@ -157,10 +157,13 @@ boxman = {
     y: -120,
     width: 60,
     height: 120,
-    maxHeight: 150,
     yVelocity: 0,
     gravity: .1,
     jumping: false,
+    spriteHeight: 170,
+    spriteWidth: 107,
+    frameX: 0,
+
 
     update() {
         //stops the character from going below the line
@@ -179,7 +182,12 @@ boxman = {
 
 
         this.y += this.yVelocity //creating gravity
-        ctx.drawImage(boxmanImg, this.x, this.y, this.width, this.height)
+        ctx.drawImage(boxmanImg, this.frameX * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height)
+        if (this.frameX < 20) {
+            this.frameX++
+        } else {
+            this.frameX = 0
+        }
     },
 
     newPosition(event) {
@@ -192,20 +200,12 @@ boxman = {
 
 
 function AnimationLoop() {
-    console.log('animating')
-    // if (!gameOn) { return }
-    // ctx.clearRect(0, 0, canvas.width, canvas.height)
+
     ctx.reset()
-    ctx.drawImage(bg1, 0, 0, canvas.width, canvas.height)
-    ctx.drawImage(bg2, 0, 0, canvas.width, canvas.height)
-    ctx.drawImage(bg3, 0, 0, canvas.width, canvas.height)
-    ctx.drawImage(bg4, 0, 0, canvas.width, canvas.height)
-    ctx.drawImage(bg5, 0, 0, canvas.width, canvas.height)
-    // ctx.drawImage(rockImg, canvas.width - 90, canvas.height - 210, 80, 130)
-
-
-
+    drawBackground()
     boxman.update()
+
+
 
     obstacleArr.forEach((i) => {
         i.update()
@@ -237,7 +237,7 @@ function startGame() {
     score = 0
 
     gameOn = true
-    animationId = setInterval(AnimationLoop, 16)
+    animationId = setInterval(AnimationLoop, 15)
     obstacleId = setInterval(generateObastacles, 2500)
 
 
