@@ -5,6 +5,7 @@ let obstacleArr = []
 let score = 0
 let level = 1
 speed = 0
+let jumping = false
 
 const boxmanImg = new Image()
 boxmanImg.src = './images/walkingSpritesheet.png'
@@ -162,6 +163,8 @@ boxman = {
     jumping: false,
     spriteHeight: 170,
     spriteWidth: 107,
+    jumpSpriteHeight: 169,
+    jumpSpriteWidth: 92,
     frameX: 0,
 
 
@@ -170,6 +173,7 @@ boxman = {
         if (this.y > canvas.height - 215) {
             this.y = canvas.height - 215
             this.yVelocity = 0
+            jumping = false
         }
         if (this.y < 60) {
             this.yVelocity += 5
@@ -182,16 +186,26 @@ boxman = {
 
 
         this.y += this.yVelocity //creating gravity
-        ctx.drawImage(boxmanImg, this.frameX * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height)
-        if (this.frameX < 20) {
-            this.frameX++
+        if (jumping) {
+            ctx.drawImage(boxmanJumpImg, this.frameX * this.jumpSpriteWidth, 0, this.jumpSpriteWidth, this.jumpSpriteHeight, this.x, this.y, this.width, this.height)
+            if (this.frameX < 12) {
+                this.frameX++
+            } else {
+                this.frameX = 0
+            }
         } else {
-            this.frameX = 0
+            ctx.drawImage(boxmanImg, this.frameX * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height)
+            if (this.frameX < 20) {
+                this.frameX++
+            } else {
+                this.frameX = 0
+            }
         }
     },
 
     newPosition(event) {
         if (event.code === 'ArrowUp') {
+            jumping = true
             this.yVelocity = 0
             this.yVelocity -= 25
         }
