@@ -101,7 +101,7 @@ function LevelUp() {
     clearInterval(obstacleId)
     ctx.fillStyle = 'red'
     ctx.font = '150px Special Elite'
-    ctx.fillText(`Level ${level}`, 250, 300)
+    ctx.fillText(`Level Up`, 250, 300)
     document.getElementById('play-button').onclick = function () {
         if (!gameOn) {
             startGame()
@@ -113,6 +113,7 @@ function LevelUp() {
 
 function gameOver() {
     level = 1
+    score = 0
     clearInterval(animationId)
     clearInterval(obstacleId)
 
@@ -194,10 +195,12 @@ class Obstacle {
     }
 
     update() {
-        if (level == 2) {
+        if (level >= 2) {
             this.x -= this.randInt2
-        } else if (level == 3) {
+        } else if (level > 4) {
             this.x -= this.randInt3
+        } else if (level > 6) {
+            this.x = level - this.randInt3
         } else {
             this.x -= 5
         }
@@ -315,9 +318,11 @@ function AnimationLoop() {
             obstacleArr.splice(i, 1)
             if (score == 5 && level == 1) {
                 LevelUp()
-            } else if (score == 5 && level == 2) {
+            } else if (score > 13 &&
+                level == 2) {
                 LevelUp()
-            } else if (score == 5 && level == 3) {
+            } else if (score > 25 && level == 3) {
+                // LevelUp()
                 winGame()
             }
         }
@@ -333,7 +338,7 @@ function AnimationLoop() {
 
 function startGame() {
     // console.log('starting game')
-    score = 0
+    // score = 0
 
     gameOn = true
     animationId = setInterval(AnimationLoop, 16)
