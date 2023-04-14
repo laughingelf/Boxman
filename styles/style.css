@@ -12,6 +12,15 @@ body h1 {
     font-size: 200px;
 }
 
+body h3 {
+    font-family: 'Special Elite';
+}
+
+#jump,
+#manA {
+    color: red;
+}
+
 #game-board {
     visibility: hidden;
     height: 0px;
